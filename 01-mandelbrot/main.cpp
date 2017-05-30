@@ -5,45 +5,6 @@
 using namespace std;
 using namespace cv;
 
-void previewLabColorSpace(double L)
-{
-
-    double starta = -127.0, stopa = 127.0, stepa = 0.5;
-    double startb = -127.0, stopb = 127.0, stepb = 0.5;
-
-    int cols = (stopa - starta) / stepa;
-    int rows = (stopb - startb) / stepb;
-
-    int row, col;
-    double a, b;
-
-    Mat lab_image(rows, cols, CV_32FC3);
-
-    for(row = 0; row < rows; ++row)
-    {
-        for(col = 0; col < cols; ++col)
-        {
-            a = starta + stepa*col;
-            b = startb + stepb*row;
-
-            lab_image.at<Vec3f>(row, col) = Vec3d(L, a, b);
-        }
-    }
-
-    Mat gbr_image(rows, cols, CV_8UC3);
-
-    cvtColor(lab_image, gbr_image, COLOR_Lab2BGR);
-
-    // flip top-to-bottom
-    flip(gbr_image, gbr_image, 0);
-
-    // draw a circle
-    circle(gbr_image, Point(cols/2, rows/2), 120, Scalar(0, 0, 0));
-
-    namedWindow("Preview Lab Color Space", WINDOW_AUTOSIZE);
-    imshow("Preview Lab Color Space", gbr_image);
-
-}
 
 int main(int argc, char *argv[])
 {
