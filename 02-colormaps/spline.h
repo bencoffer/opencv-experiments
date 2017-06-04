@@ -16,20 +16,21 @@ template <typename T>
 class Spline
 {
 public:
-    std::vector<SplineNode<T> > nodes;
     
     void addNode(double x, T y)
     {
         if(nodes.size() == 0 || x > nodes.back().x)
         {
+            // Add node to the end of the vector
             nodes.push_back(SplineNode<T>(x, y));
         }
         else
         {
+            // We want the nodes vector to remain sorted by the x values.
+            // So, we do a binary search to find the insertion point.
             auto end = nodes.size() - 1;
             decltype(end) start = -1;
             decltype(end) mid = end / 2;
-
             while(end - start > 1)
             {
                 if(x > nodes[mid].x)
@@ -39,25 +40,25 @@ public:
                 mid = (start + end) / 2;
             }
 
-            if(x == nodes[end].x)
+            if(nodes[end].x == x)
             {
+                // If the new node has the same x value as an existing node,
+                // then update the existing node with the new y value.
                 nodes[end].y = y;
             }
             else
             {
-                // item is inserted BEFORE nodes.begin()+end
+                // This will insert the new node BEFORE nodes.begin()+end
                 nodes.insert(nodes.begin()+end, SplineNode<T>(x, y));
             }
         }
     }
+
+private:
+
+    std::vector<SplineNode<T> > nodes;
+
 };
-
-
-/*
-Spline<Vec3d> spline;
-
-spline.addnode(double x, Vec3d y
-*/
 
 
 #endif
