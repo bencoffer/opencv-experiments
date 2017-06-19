@@ -41,6 +41,13 @@ int main(int argc, char *argv[])
 
     // n[2].x = 21.2;  // these throw an error as they should
     // n[2].y = 31.3;
+    
+    s.deleteNode(3);
+
+    for(SplineNode<double> const &node : s.nodes())
+    {
+        cout << node.x << "\t" << node.y << endl;
+    }
 
     return 0;
 }

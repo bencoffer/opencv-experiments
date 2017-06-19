@@ -53,6 +53,29 @@ public:
                 nodes_.insert(nodes_.begin()+end, SplineNode<T>(x, y));
             }
         }
+
+        isCalculated_ = false;
+    }
+
+    void deleteNode(size_t index)
+    {
+        nodes_.erase(nodes_.begin() + index);
+        isCalculated_ = false;
+    }
+
+    void calculate()
+    {
+        // todo: calclate the spline coefficients
+
+        isCalculated_ = true;
+    }
+
+    T evaluate(double x)
+    {
+        if(!isCalculated_)
+            calculate();
+
+        // todo: evaluate the spline at position x
     }
 
     // Make nodes_ publicly accessible as a read-only property
@@ -64,6 +87,7 @@ public:
 private:
 
     std::vector<SplineNode<T> > nodes_;
+    bool isCalculated_ = false;
 
 };
 
