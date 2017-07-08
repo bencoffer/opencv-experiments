@@ -49,6 +49,9 @@ int main(int argc, char *argv[])
         cout << node.x << "\t" << node.y << endl;
     }
 
+    s.calculate();
+
+
     return 0;
 }
 
