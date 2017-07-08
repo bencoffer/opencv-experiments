@@ -36,3 +36,7 @@
 
 # Vim Scraps
 *.swp
+*.swo
+
+# Ctags file
+tags
