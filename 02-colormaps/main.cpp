@@ -22,35 +22,16 @@ int main(int argc, char *argv[])
     s.addNode(2.0, 3.22);
     s.addNode(1.01, 3.101);
     s.addNode(0.99, 3.099);
+
     
     cout << "Spline Nodes:" << endl;
     
-    for(SplineNode<double> const &node : s.nodes())
+    for(pair<double, double> const &node : s.nodes())
     {
-        cout << node.x << "\t" << node.y << endl;
-    }
-
-    // auto n = s.nodes();                             // note: using auto n causes n to be a copy, not a const reference.
-    // const auto &n = s.nodes();                      // But you can do this
-    const vector<SplineNode<double> > &n = s.nodes();  // Or this
-
-    cout << endl;
-    cout << n[2].x << endl;
-    cout << n[2].y << endl;
-    cout << endl;
-
-    // n[2].x = 21.2;  // these throw an error as they should
-    // n[2].y = 31.3;
-    
-    s.deleteNode(3);
-
-    for(SplineNode<double> const &node : s.nodes())
-    {
-        cout << node.x << "\t" << node.y << endl;
+        cout << node.first << "\t" << node.second << endl;
     }
 
     s.calculate();
-
 
     return 0;
 }
