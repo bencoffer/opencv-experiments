@@ -72,7 +72,7 @@ public:
             h[i] = x[i+1] - x[i];
 
         for(i = 1; i < n; ++i)
-            alpha[i] = 3*(  (a_[i+1] - a_[i])/h[i] + (a_[i] - a_[i-1])/h[i-1]  );
+            alpha[i] = 3*(  (a_[i+1] - a_[i])/h[i] - (a_[i] - a_[i-1])/h[i-1]  );
 
         l[0] = 1.0;
         mu[0] = 0.0;
@@ -92,9 +92,13 @@ public:
         while(i-- > 0)
         {
             c_[i] = z[i] - mu[i]*c_[i+1];
-            b_[i] = (a_[i+1] - a_[i])/h[i] - h[i]*(c_[i+1] - 2*c_[i])/3;
+            b_[i] = (a_[i+1] - a_[i])/h[i] - h[i]*(c_[i+1] + 2*c_[i])/3;
             d_[i] = (c_[i+1] - c_[i]) / (3*h[i]);
         }
+
+        // Remove the extra values that are at the end of a_ and c_
+        a_.pop_back();
+        c_.pop_back();
 
         isCalculated_ = true;
     }
