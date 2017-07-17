@@ -100,6 +100,14 @@ SCENARIO( "test some spline calculations" )
             CHECK( c[1] == Approx( 0.75 ).epsilon(tolerance) );
             CHECK( d[1] == Approx(-0.25 ).epsilon(tolerance) );
         }
+
+        THEN( "the spline passes perfectly through its nodes" )
+        {
+            for(auto it = s.nodes().cbegin(); it != s.nodes().cend(); ++it)
+            {
+                REQUIRE( s.evaluate(it->first) == it->second );
+            }
+        }
     }
 
 
@@ -152,14 +160,23 @@ SCENARIO( "test some spline calculations" )
             CHECK( c[2] == Approx( 5.8300667546258174 ).epsilon(tolerance) );
             CHECK( d[2] == Approx(-1.9433555848752724 ).epsilon(tolerance) );
         }
+
+        THEN( "the spline passes perfectly through its nodes" )
+        {
+            for(auto it = s.nodes().cbegin(); it != s.nodes().cend(); ++it)
+            {
+                REQUIRE( s.evaluate(it->first) == it->second );
+            }
+        }
+
+        THEN( "this particular spline approximates the exponential function" )
+        {
+            CHECK( std::abs(std::exp(-0.10) - s.evaluate(-0.10)) < 0.2 );
+            CHECK( std::abs(std::exp( 0.50) - s.evaluate( 0.50)) < 0.2 );
+            CHECK( std::abs(std::exp( 1.70) - s.evaluate( 1.70)) < 0.2 );
+            CHECK( std::abs(std::exp( 2.10) - s.evaluate( 2.10)) < 0.2 );
+            CHECK( std::abs(std::exp( 3.01) - s.evaluate( 3.01)) < 0.2 );
+        }
     }
-
-    Spline<double> s;
-    s.addNode(0.0, exp(0.0));
-    s.addNode(1.0, exp(1.0));
-    s.addNode(2.0, exp(2.0));
-    s.addNode(3.0, exp(3.0));
-    s.calculate();
-
 }
 

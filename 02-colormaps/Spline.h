@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <map>
+#include <iostream>
 
 
 template <typename T>
@@ -109,7 +110,30 @@ public:
         if(!isCalculated_)
             calculate();
 
-        // todo: evaluate the spline at position x
+        // Find the node that is at the beginning of the spline segment containing x
+        auto it = nodes_.lower_bound(x);
+        
+        if(it == nodes_.end())
+        {
+            // go back two
+            --(--it);
+        }
+        else if(it == --nodes_.end())
+        {
+            // go back one
+            --it;
+        }
+
+        auto i = std::distance(nodes_.begin(), it);
+
+        // Get x relative to the node
+        x = x - it->first;
+
+        // Finally, evaluate the cubic polynomial
+        return   a_[i]
+               + b_[i] * x
+               + c_[i] * std::pow(x,2)
+               + d_[i] * std::pow(x,3) ;
     }
 
 
