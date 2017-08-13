@@ -171,11 +171,52 @@ SCENARIO( "test some spline calculations" )
 
         THEN( "this particular spline approximates the exponential function" )
         {
-            CHECK( std::abs(std::exp(-0.10) - s.evaluate(-0.10)) < 0.2 );
-            CHECK( std::abs(std::exp( 0.50) - s.evaluate( 0.50)) < 0.2 );
-            CHECK( std::abs(std::exp( 1.70) - s.evaluate( 1.70)) < 0.2 );
-            CHECK( std::abs(std::exp( 2.10) - s.evaluate( 2.10)) < 0.2 );
-            CHECK( std::abs(std::exp( 3.01) - s.evaluate( 3.01)) < 0.2 );
+            CHECK( std::abs(std::exp(-0.10) - s.evaluate(-0.10)) < 0.3 );
+            CHECK( std::abs(std::exp( 0.50) - s.evaluate( 0.50)) < 0.3 );
+            CHECK( std::abs(std::exp( 1.70) - s.evaluate( 1.70)) < 0.3 );
+            CHECK( std::abs(std::exp( 2.10) - s.evaluate( 2.10)) < 0.3 );
+            CHECK( std::abs(std::exp( 3.01) - s.evaluate( 3.01)) < 0.3 );
+        }
+    }
+
+    GIVEN( "a spline that oscillates between 0.0 and 1.1" )
+    {
+        Spline<double> s;
+        s.addNode(0.0, 0.0);
+        s.addNode(1.0, 1.0);
+        s.addNode(2.0, 0.0);
+        s.addNode(3.0, 1.0);
+        s.addNode(4.0, 0.0);
+        s.addNode(5.0, 1.0);
+        s.calculate();
+
+        THEN( "the spline has correct values at and near its nodes" )
+        {
+            double tolerance = std::numeric_limits<double>::epsilon()*1000;
+
+            CHECK( std::abs(s.evaluate(0.0-tolerance) - 0.0) < tolerance*10 );
+            CHECK( std::abs(s.evaluate(0.0          ) - 0.0) < tolerance    );
+            CHECK( std::abs(s.evaluate(0.0+tolerance) - 0.0) < tolerance*10 );
+
+            CHECK( std::abs(s.evaluate(1.0-tolerance) - 1.0) < tolerance*10 );
+            CHECK( std::abs(s.evaluate(1.0          ) - 1.0) < tolerance    );
+            CHECK( std::abs(s.evaluate(1.0+tolerance) - 1.0) < tolerance*10 );
+
+            CHECK( std::abs(s.evaluate(2.0-tolerance) - 0.0) < tolerance*10 );
+            CHECK( std::abs(s.evaluate(2.0          ) - 0.0) < tolerance    );
+            CHECK( std::abs(s.evaluate(2.0+tolerance) - 0.0) < tolerance*10 );
+
+            CHECK( std::abs(s.evaluate(3.0-tolerance) - 1.0) < tolerance*10 );
+            CHECK( std::abs(s.evaluate(3.0          ) - 1.0) < tolerance    );
+            CHECK( std::abs(s.evaluate(3.0+tolerance) - 1.0) < tolerance*10 );
+
+            CHECK( std::abs(s.evaluate(4.0-tolerance) - 0.0) < tolerance*10 );
+            CHECK( std::abs(s.evaluate(4.0          ) - 0.0) < tolerance    );
+            CHECK( std::abs(s.evaluate(4.0+tolerance) - 0.0) < tolerance*10 );
+
+            CHECK( std::abs(s.evaluate(5.0-tolerance) - 1.0) < tolerance*10 );
+            CHECK( std::abs(s.evaluate(5.0          ) - 1.0) < tolerance    );
+            CHECK( std::abs(s.evaluate(5.0+tolerance) - 1.0) < tolerance*10 );
         }
     }
 }

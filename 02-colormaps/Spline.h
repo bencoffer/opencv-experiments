@@ -3,8 +3,6 @@
 
 #include <vector>
 #include <map>
-#include <iostream>
-
 
 template <typename T>
 class Spline
@@ -111,14 +109,14 @@ public:
             calculate();
 
         // Find the node that is at the beginning of the spline segment containing x
-        auto it = nodes_.lower_bound(x);
+        auto it = nodes_.upper_bound(x);
         
         if(it == nodes_.end())
         {
             // go back two
             --(--it);
         }
-        else if(it == --nodes_.end())
+        else if(it != nodes_.begin())
         {
             // go back one
             --it;
