@@ -16,9 +16,9 @@ class InteractiveQuadrilateral(object):
         
         self.line = Line2D(xdata = np.hstack((xdata, xdata[0])),
                            ydata = np.hstack((ydata, ydata[0])),
-                           color='red',
+                           color='#f92672',   # Pink from molokai color scheme
                            marker='o',
-                           markerfacecolor='white',
+                           markerfacecolor='#ffffff',
                            animated=True)
         
         self.axes.add_line(self.line)
