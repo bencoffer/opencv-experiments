@@ -18,6 +18,7 @@ input_image = cv2.cvtColor(input_image, cv2.COLOR_BGR2RGB)
 
 # Figure 1 - Select Quadrilateral from Input Image
 fig1 = plt.figure(1)
+fig1.canvas.set_window_title('Figure 1 - Select Quadrilateral from Input Image')
 ax1 = fig1.add_subplot(1, 1, 1)
 img1 = ax1.imshow(input_image)
 ax1.set_xticks(())
@@ -67,6 +68,7 @@ generate_output_image()
 
 # Figure 2 - Display Output Image
 fig2 = plt.figure(2)
+fig2.canvas.set_window_title('Figure 2 - Output Image')
 ax2 = fig2.add_subplot(1, 1, 1)
 img2 = ax2.imshow(output_image, animated=True)
 ax2.set_xticks(())
