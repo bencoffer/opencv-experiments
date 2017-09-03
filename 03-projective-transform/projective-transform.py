@@ -27,6 +27,14 @@ quadrilateral = benswidgets.InteractiveQuadrilateral(
                             )
 fig1.tight_layout(pad=0, w_pad=0, h_pad=0)
 
+
+def update_figures():
+    print(quadrilateral.xdata)
+    print(quadrilateral.ydata)
+    print('')
+    
+quadrilateral.on_changed(update_figures)
+
 plt.show()
 
 

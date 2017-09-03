@@ -29,6 +29,15 @@ class InteractiveQuadrilateral(object):
         self.canvas.mpl_connect('motion_notify_event', self._motion_notify_callback)
         
         self._selected_vertex = None
+        self._observers = []
+        
+    
+    def on_changed(self, func):
+        """
+        Add func to the list of observers.
+        The observers will be called whenever this widget changes.
+        """
+        self._observers.append(func)
         
 
     def _draw_callback(self, event):
@@ -86,4 +95,8 @@ class InteractiveQuadrilateral(object):
         self.canvas.restore_region(self.background)
         self.axes.draw_artist(self.line)
         self.canvas.blit(self.axes.bbox)
+        
+        # Call all observer functions
+        for func in self._observers:
+            func()
         
