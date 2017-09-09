@@ -89,3 +89,6 @@ quadrilateral.on_changed(update_figures)
 plt.show()
 
 
+# Save the Output Image
+output_image = cv2.cvtColor(output_image, cv2.COLOR_RGB2BGR)
+cv2.imwrite('output_image.jpg', output_image)
