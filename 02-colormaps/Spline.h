@@ -5,7 +5,7 @@
 #include <map>
 
 template <typename T>
-class Spline
+class CubicSpline
 {
 public:
     
@@ -158,6 +158,300 @@ private:
     bool isCalculated_ = false;
 
 };
+
+
+template <typename T>
+class QuarticSpline
+{
+public:
+    
+    void addNode(double x, T y, T yd)
+    {
+        nodes_[x] = std::make_pair(y, yd);
+        isCalculated_ = false;
+    }
+
+    void deleteNode(double x)
+    {
+        nodes_.erase(x);
+        isCalculated_ = false;
+    }
+
+    void calculate()
+    {
+        // Calculate the spline coefficients a_, b_, c_, d_, e_
+        // from the spline nodes_.
+        
+        // Note: the code below is optimized more for readability
+        //       than for computational efficiency.
+        
+
+        // Copy the node data into vectors x, a_, b_
+
+        std::vector<double>  x;
+        a_.clear();
+        b_.clear();
+        for(auto it = nodes_.begin(); it != nodes_.end(); ++it)
+        {
+            x.push_back(it->first);
+            a_.push_back(it->second.first);
+            b_.push_back(it->second.second);
+        }
+
+
+        // Calculate the remaining spline coefficients: c_, d_, e_
+        // Note: there are  n  segments (0 thru n-1)
+        //             and n+1  nodes   (0 thru  n )
+
+        std::size_t i;
+        std::size_t n = x.size() - 1;
+
+        c_.resize(n+1);
+        d_.resize(n);
+        e_.resize(n);
+
+        T zero = a_[0] * 0.0;
+
+        std::vector<double>      h(n);
+        
+        for(i = 0; i < n; ++i)
+            h[i] = x[i+1] - x[i];
+
+        
+        c_[0] = -a_[0];
+        for(i = 0; i < n; ++i)
+        {
+            c_[i+1] = c_[i] + 3*(b_[i+1] + b_[i])/h[i] - 6*(a_[i+1] - a_[i])/std::pow(h[i],2);
+            d_[i] = (b_[i+1] - b_[i])/std::pow(h[i],2) - 2*(c_[i+1] + 2*c_[i])/(3*h[i]);
+            e_[i] = (c_[i+1] - c_[i])/(6*std::pow(h[i],2)) - d_[i]/(2*h[i]);
+
+        }
+
+        // Remove the extra values that are at the end of a_ and c_
+        a_.pop_back();
+        b_.pop_back();
+        c_.pop_back();
+
+        isCalculated_ = true;
+    }
+
+
+    T evaluate(double x)
+    {
+        if(!isCalculated_)
+            calculate();
+
+        // Find the node that is at the beginning of the spline segment containing x
+        auto it = nodes_.upper_bound(x);
+        
+        if(it == nodes_.end())
+        {
+            // go back two
+            --(--it);
+        }
+        else if(it != nodes_.begin())
+        {
+            // go back one
+            --it;
+        }
+
+        auto i = std::distance(nodes_.begin(), it);
+
+        // Get x relative to the node
+        x = x - it->first;
+
+        // Finally, evaluate the cubic polynomial
+        return   a_[i]
+               + b_[i] * x
+               + c_[i] * std::pow(x,2)
+               + d_[i] * std::pow(x,3)
+               + e_[i] * std::pow(x,4) ;
+    }
+
+
+    // Make the private data publicly accessible as read-only properties
+
+    const std::map<double, std::pair<T,T> > &nodes() const {return nodes_;}
+    const std::vector<T> &a() const {return a_;}
+    const std::vector<T> &b() const {return b_;}
+    const std::vector<T> &c() const {return c_;}
+    const std::vector<T> &d() const {return d_;}
+    const std::vector<T> &e() const {return e_;}
+    const bool &isCalculated() const {return isCalculated_;}
+
+private:
+
+    // Spline Nodes
+    std::map<double, std::pair<T,T> > nodes_;
+
+    // Spline Coefficients
+    std::vector<T> a_;
+    std::vector<T> b_;
+    std::vector<T> c_;
+    std::vector<T> d_;
+    std::vector<T> e_;
+
+    bool isCalculated_ = false;
+
+};
+
+
+template <typename T>
+class QuinticSpline
+{
+public:
+    
+    void addNode(double x, T y, T yd, T ydd)
+    {
+        nodes_[x] = std::make_tuple(y, yd, ydd);
+        isCalculated_ = false;
+    }
+
+    void deleteNode(double x)
+    {
+        nodes_.erase(x);
+        isCalculated_ = false;
+    }
+
+    void calculate()
+    {
+        // Calculate the spline coefficients a_, b_, c_, d_, e_, f_
+        // from the spline nodes_.
+        
+        // Note: the code below is optimized more for readability
+        //       than for computational efficiency.
+        
+
+        // Copy the node data into vectors x, a_, b_, c_
+
+        std::vector<double>  x;
+        a_.clear();
+        b_.clear();
+        c_.clear();
+        for(auto it = nodes_.begin(); it != nodes_.end(); ++it)
+        {
+            x.push_back(it->first);
+            a_.push_back(std::get<0>(it->second));
+            b_.push_back(std::get<1>(it->second));
+            c_.push_back(std::get<2>(it->second));
+        }
+
+
+        // Calculate the remaining spline coefficients: d_, e_, f_
+        // Note: there are  n  segments (0 thru n-1)
+        //             and n+1  nodes   (0 thru  n )
+
+        std::size_t i;
+        std::size_t n = x.size() - 1;
+
+        d_.resize(n);
+        e_.resize(n);
+        f_.resize(n);
+
+        T zero = a_[0] * 0.0;
+
+        std::vector<double>      h(n);
+        
+        for(i = 0; i < n; ++i)
+            h[i] = x[i+1] - x[i];
+
+        
+        for(i = 0; i < n; ++i)
+        {
+            d_[i] = 10*(a_[i+1] - a_[i])/std::pow(h[i],3)
+                  - 4*b_[i+1]/std::pow(h[i],2)
+                  - 6*b_[i]/std::pow(h[i],2)
+                  + c_[i+1]/(2*h[i])
+                  - 7*c_[i]/h[i];
+
+            e_[i] = (b_[i+1] - b_[i])/std::pow(h[i],3)
+                  - c_[i+1]/(4*std::pow(h[i],2))
+                  - c_[i]/(2*std::pow(h[i],2))
+                  - 3*d_[i]/(2*h[i]);
+
+            f_[i] = (c_[i+1] + c_[i])/(5*std::pow(h[i],3))
+                  + 3*d_[i]/(5*std::pow(h[i],2))
+                  - 3*(b_[i+1] - b_[i])/(5*std::pow(h[i],4));
+
+
+            //e_[i] = (c_[i+1] - c_[i])/(6*std::pow(h[i],2)) - d_[i]/(2*h[i]);
+            //f_[i] = ;
+
+        }
+
+
+        // Remove the extra values that are at the end of a_, b_, and c_
+        a_.pop_back();
+        b_.pop_back();
+        c_.pop_back();
+
+        isCalculated_ = true;
+    }
+
+
+    T evaluate(double x)
+    {
+        if(!isCalculated_)
+            calculate();
+
+        // Find the node that is at the beginning of the spline segment containing x
+        auto it = nodes_.upper_bound(x);
+        
+        if(it == nodes_.end())
+        {
+            // go back two
+            --(--it);
+        }
+        else if(it != nodes_.begin())
+        {
+            // go back one
+            --it;
+        }
+
+        auto i = std::distance(nodes_.begin(), it);
+
+        // Get x relative to the node
+        x = x - it->first;
+
+        // Finally, evaluate the cubic polynomial
+        return   a_[i]
+               + b_[i] * x
+               + c_[i] * std::pow(x,2)
+               + d_[i] * std::pow(x,3)
+               + e_[i] * std::pow(x,4)
+               + f_[i] * std::pow(x,5) ;
+    }
+
+
+    // Make the private data publicly accessible as read-only properties
+
+    const std::map<double, std::tuple<T,T,T> > &nodes() const {return nodes_;}
+    const std::vector<T> &a() const {return a_;}
+    const std::vector<T> &b() const {return b_;}
+    const std::vector<T> &c() const {return c_;}
+    const std::vector<T> &d() const {return d_;}
+    const std::vector<T> &e() const {return e_;}
+    const std::vector<T> &f() const {return f_;}
+    const bool &isCalculated() const {return isCalculated_;}
+
+private:
+
+    // Spline Nodes
+    std::map<double, std::tuple<T,T,T> > nodes_;
+
+    // Spline Coefficients
+    std::vector<T> a_;
+    std::vector<T> b_;
+    std::vector<T> c_;
+    std::vector<T> d_;
+    std::vector<T> e_;
+    std::vector<T> f_;
+
+    bool isCalculated_ = false;
+
+};
+
+
 
 
 #endif  // SPLINE_H_

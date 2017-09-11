@@ -8,7 +8,7 @@ SCENARIO( "spline nodes can be added and deleted" )
 {
     GIVEN( "a Spline with some nodes added" )
     {
-        Spline<double> s;
+        CubicSpline<double> s;
         
         s.addNode(1.00, 3.100);
         s.addNode(5.00, 3.500);
@@ -60,7 +60,7 @@ SCENARIO( "test some spline calculations" )
 {
     GIVEN( "the spline from Burden, Faires - Numerical Analysis 10th Ed, Ch 3, Example 1" )
     {
-        Spline<double> s;
+        CubicSpline<double> s;
         s.addNode(1.0, 2.0);
         s.addNode(2.0, 3.0);
         s.addNode(3.0, 5.0);
@@ -113,7 +113,7 @@ SCENARIO( "test some spline calculations" )
 
     GIVEN( "the spline from Burden, Faires - Numerical Analysis 10th Ed, Ch 3, Example 2" )
     {
-        Spline<double> s;
+        CubicSpline<double> s;
         s.addNode(0.0, std::exp(0.0));
         s.addNode(1.0, std::exp(1.0));
         s.addNode(2.0, std::exp(2.0));
@@ -181,7 +181,7 @@ SCENARIO( "test some spline calculations" )
 
     GIVEN( "a spline that oscillates between 0.0 and 1.1" )
     {
-        Spline<double> s;
+        CubicSpline<double> s;
         s.addNode(0.0, 0.0);
         s.addNode(1.0, 1.0);
         s.addNode(2.0, 0.0);

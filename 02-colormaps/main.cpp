@@ -25,6 +25,13 @@ int main(int argc, char *argv[])
     size_t outputRows = 720;
     float outputAspectRatio = static_cast<float>(outputCols) / outputRows;
 
+    if(argc < 2)
+    {
+        std::cout << "No images to load..." << std::endl;
+        std::cout << "Please pass image filenames as command line arguments." << std::endl;
+        return 0;
+    }
+
     for(size_t i = 1; i < argc; ++i)
     {
         // Load image and convert to Lab color space
@@ -83,13 +90,14 @@ int main(int argc, char *argv[])
     
     
     // Create a spline of OpenCV images
-    Spline<cv::Mat> imageSpline;
+    QuinticSpline<cv::Mat> imageSpline;
     double time = 0.0;
+    cv::Mat zero = images[0]*0;
     std::cout << "Adding images to spline..." << std::endl;
     for(const cv::Mat &image : images)
     {
-        imageSpline.addNode(time, image); time += 1.0;
-        imageSpline.addNode(time, image); time += 1.0;
+        imageSpline.addNode(time, image, zero, zero); time += .3;
+        imageSpline.addNode(time, image, zero, zero); time += .1;
     }
     double finalTime = time;
     std::cout << "Calculating spline coefficients..." << std::endl;
