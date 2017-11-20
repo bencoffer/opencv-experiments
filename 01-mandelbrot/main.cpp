@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
 
 
             // Calculate a pretty color based on the shade
-            const double breakpoint = 0.30;
+            const double breakpoint = 0.25;
             if (shade < breakpoint)
             {
                 shade = shade / breakpoint;
@@ -80,6 +80,8 @@ int main(int argc, char *argv[])
             image.at<Vec3b>(row, col) = Vec3b(B, G, R);
         }
     }
+
+    imwrite("output.png", image);
 
     namedWindow("Display Image", WINDOW_AUTOSIZE);
     imshow("Display Image", image);
