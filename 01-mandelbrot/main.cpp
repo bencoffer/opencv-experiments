@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
 
 
             // Calculate a pretty color based on the shade
-            const double breakpoint = 0.25;
+            const double breakpoint = 0.28;
             if (shade < breakpoint)
             {
                 shade = shade / breakpoint;
