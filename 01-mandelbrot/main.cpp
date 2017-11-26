@@ -2,23 +2,19 @@
 #include <opencv2/opencv.hpp>
 #include <math.h>
 
-using namespace std;
-using namespace cv;
-
-
 int main(int argc, char *argv[])
 {
     const int max_iterations = 1000;
 
-    const double window_startx = -2.0;
-    const double window_width = 3.0;
+    const double window_startx = -1.9;
+    const double window_width = 2.5;
     const double window_starty = 1.2;
     const double window_height = 1.2;
 
     const int image_width = 2000;
     const int image_height = round(image_width * window_height / window_width);
     
-    Mat image(image_height, image_width, CV_8UC3);
+    cv::Mat image(image_height, image_width, CV_8UC3);
 
     int row, col, n;
     double x, y, cx, cy, temp;
@@ -30,11 +26,9 @@ int main(int argc, char *argv[])
     {
         for(col = 0; col < image_width; ++col)
         {
-
             // Get the point (cx, cy) corresponding to the current pixel
             cx = window_startx + col*window_width/image_width;
             cy = window_starty - row*window_height/image_height;
-
 
             // Calculate the escape time n for point (cx, cy)
             x = cx;
@@ -49,15 +43,12 @@ int main(int argc, char *argv[])
                     break;
             }
 
-
             // Calculate a smooth shade
             if(n == max_iterations)
                 shade = n;
             else
                 shade = n + 1 - log(log(sqrt(x*x + y*y)))/log(2);
-
             shade = sqrt(shade / max_iterations);
-
 
             // Calculate a pretty color based on the shade
             const double breakpoint = 0.28;
@@ -77,16 +68,13 @@ int main(int argc, char *argv[])
             }
 
             // Set the pixel color
-            image.at<Vec3b>(row, col) = Vec3b(B, G, R);
+            image.at<cv::Vec3b>(row, col) = cv::Vec3b(B, G, R);
         }
     }
 
-    imwrite("output.png", image);
+    cv::imwrite("mandelbrot.png", image);
 
-    namedWindow("Display Image", WINDOW_AUTOSIZE);
-    imshow("Display Image", image);
-
-    waitKey(0);
+    std::cout << "Saved output image to mandelbrot.png" << std::endl;
 
     return 0;
 }
