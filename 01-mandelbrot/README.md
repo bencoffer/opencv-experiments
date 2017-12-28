@@ -1,5 +1,5 @@
 # Mandelbrot Set Plot
 
-A plot of the Mandelbrot set with a smooth shading that highlights the branches.
+A plot of the Mandelbrot set with a smooth shading.
 
 ![Mandelbrot Plot](mandelbrot.png?raw=true "Mandelbrot Plot")
